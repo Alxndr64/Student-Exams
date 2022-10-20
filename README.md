@@ -1,2 +1,2 @@
 # Student-Exams
-Challenge coding provided by Instructors
+Coding challenges provided by Instructors
