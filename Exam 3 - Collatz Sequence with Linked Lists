@@ -1,0 +1,140 @@
+#include <iostream>
+
+struct collatzNode {					//Creation of Linked List strcture
+	int item;
+	collatzNode* link;
+};
+
+void collatzCalculations(int collatzPar);									//To do calculations and determine the integer that has the highest number of terms
+void linkedListOperations(int highestCollatz, int numOfTerms);				//To add the longest Collatz Sequence to a linked list
+
+int main()
+{
+	int collatzValue;
+
+	std::cout << "Please enter an integer between 1 amd 100: ";
+	std::cin >> collatzValue;
+
+	while (!(std::cin >> collatzValue))
+	{
+		std::cout << "ERROR: a number must be entered: ";
+		std::cin.clear();
+		std::cin.ignore(132, '\n');
+	}
+	
+	collatzCalculations(collatzValue);
+}
+
+void collatzCalculations(int collatzPar)
+{
+	int highestCollatzNumber = 0;
+	int highestNumOfTerms = 0;
+	int temp = collatzPar;
+	int longestCollatz;
+	
+	for (int i = collatzPar; i > 1; i--)
+	{
+		int currentTemp = i;
+		int loopCounter = 1;
+
+		std::cout << "Current number being evaluated: " << i << std::endl;
+		std::cout << i << ", ";
+
+		while (currentTemp != 1)				//Checks for even/odd, and does the operations for the Collatz algorythm
+		{
+			if (currentTemp % 2 == 0)
+			{
+				currentTemp = currentTemp / 2;
+			}
+			else if (currentTemp % 2 == 1)
+			{
+				currentTemp = (3 * currentTemp) + 1;
+			}
+			std::cout << currentTemp << ", ";
+			loopCounter+= 1;
+		}
+		std::cout << std::endl;
+		std::cout << loopCounter << " term(s)." << std::endl;
+
+		if (loopCounter >= highestNumOfTerms)	//Retains the information of the highest number of terms and the integer they come from
+		{
+			highestCollatzNumber = i;
+			highestNumOfTerms = loopCounter;
+		}
+		loopCounter = 0;
+	}
+
+	std::cout << std::endl;
+	std::cout << "Integer that produced the longest sequence is " << highestCollatzNumber << " with " << highestNumOfTerms << " terms on the sequence." << std::endl;
+
+	linkedListOperations(highestCollatzNumber, highestNumOfTerms);
+}
+
+void linkedListOperations(int highestCollatz, int numOfTerms)
+{
+	int linkedListInteger = highestCollatz;
+	int length = numOfTerms;
+	int linkedTemp = highestCollatz;
+
+	collatzNode* head = new collatzNode;
+	head->item = linkedListInteger;
+	head->link = nullptr;
+
+	collatzNode* nextCollatzNode = new collatzNode;
+	nextCollatzNode = head;
+
+	nextCollatzNode->link = new collatzNode;
+	nextCollatzNode = nextCollatzNode->link;
+	nextCollatzNode->link = nullptr;
+	nextCollatzNode->item = linkedTemp;
+
+	while (linkedTemp != 1)
+	{
+		nextCollatzNode->link = new collatzNode;
+		nextCollatzNode = nextCollatzNode->link;
+		nextCollatzNode->link = nullptr;
+		if (linkedTemp % 2 == 0)
+		{
+			linkedTemp = linkedTemp / 2;
+		}
+		else if (linkedTemp % 2 == 1)
+		{
+			linkedTemp = (3 * linkedTemp) + 1;
+		}
+		nextCollatzNode->item = linkedTemp;
+	}
+
+	std::cout << "The numbers in the sequence are: " << std::endl;
+
+	nextCollatzNode = head->link;
+	while (nextCollatzNode != nullptr)					//Runs through the list
+	{
+		std::cout << nextCollatzNode->item << " ";
+		nextCollatzNode = nextCollatzNode->link;
+	}
+
+	if (head != nullptr)								//Standard deletion method
+	{
+		nextCollatzNode = head;
+		head = head->link;
+		delete nextCollatzNode;
+		nextCollatzNode = nullptr;
+	}
+
+	for (int l = 0; l < 10; l++)
+	{
+		std::cout << std::endl;
+	}
+
+	while (head != nullptr) 
+	{
+		collatzNode* nodeToDelete = new collatzNode;
+		nodeToDelete = head;
+		head = head->link;
+		delete nodeToDelete;
+		nodeToDelete = nullptr;
+	}
+
+	delete head;
+	head = nullptr;
+}
